@@ -210,10 +210,10 @@ param (
 	}
 
 	# Get PoSH Server Path
-	$PoSHServerPath = "C:\Program Files\PoSHServer"
+	$PoSHServerPath = $PSCommandPath | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent
 	
 	# Get PoSH Server Module Path
-	$PoSHModulePath = "C:\Program Files\PoSHServer\modules\PoSHServer"
+	$PoSHModulePath = "$PoSHServerPath\modules\PoSHServer"
 	
 	# Test PoSH Server Module Path
 	$PoSHModulePathTest = Test-Path $PoSHModulePath
@@ -494,8 +494,10 @@ param (
 				
 				while ($true)
 				{
-					Start-Sleep -s 60								
-					# Get Job Time					$JobTime = Get-Date -format HHmm
+					Start-Sleep -s 60			
+					
+					# Get Job Time
+					$JobTime = Get-Date -format HHmm
 					
 					if ($CustomJobSchedule -eq "1")
 					{
@@ -507,7 +509,14 @@ param (
 					}					
 					elseif ($CustomJobSchedule -eq "5")
 					{
-						# PoSH Server Custom Jobs (at every 5 minutes)						if ($JobTime -like "*5" -or $JobTime -like "*0")						{							if ($CustomJob)							{								. $CustomJob							}						}
+						# PoSH Server Custom Jobs (at every 5 minutes)
+						if ($JobTime -like "*5" -or $JobTime -like "*0")
+						{
+							if ($CustomJob)
+							{
+								. $CustomJob
+							}
+						}
 					}
 					elseif ($CustomJobSchedule -eq "10")
 					{
@@ -565,7 +574,13 @@ param (
 						}
 					}
 				}
-			} -ArgumentList $PoSHCustomJobArgs						# PoSH Server Custom Config			if ($CustomConfig)			{				. $CustomConfig			}
+			} -ArgumentList $PoSHCustomJobArgs
+			
+			# PoSH Server Custom Config
+			if ($CustomConfig)
+			{
+				. $CustomConfig
+			}
 			
 			# Create an HTTPListener
 			try
